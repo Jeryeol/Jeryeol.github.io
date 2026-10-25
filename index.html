@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <style>
+    .neon-btn,
+    #initCameraBtn,
+    #invertCameraBtn,
+    #stopCameraBtn {
+      font-family: "TronFont", sans-serif;
+      font-size: 1.25rem;
+      letter-spacing: 0.08em;
+      font-weight: normal;
+      text-transform: uppercase;
+    }
+  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My IT Portfolio</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="sidenav.css">
+
+<head>
+
+  <!-- CDN scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+  <script src="sidenav.js"></script>
+
+  <script>
+    let tmModel, webcam, labelContainer, maxPredictions;
+
+    const MODEL_URL = "https://teachablemachine.withgoogle.com/models/N1tKy7LsN/";
+
+    async function initTeachable() {
+      if (webcam) stopTeachable();
+      document.getElementById("webcam-container").innerHTML = "";
+      document.getElementById("label-container").innerHTML = "";
+      try {
+        tmModel = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
+        maxPredictions = tmModel.getTotalClasses();
+
+        webcam = new tmImage.Webcam(200, 200, true);
+        await webcam.setup();
+        await webcam.play();
+        window.requestAnimationFrame(teachableLoop);
+
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions; i++) {
+          labelContainer.appendChild(document.createElement("div"));
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Camera allocation denied or model URL unavailable.");
+      }
+    }
+
+    async function teachableLoop() {
+     for (let i = 0; i < maxPredictions; i++) {
+  labelContainer.childNodes[i].innerHTML =
+    prediction[i].className + ": " + (prediction[i].probability * 100).toFixed(0) + "%";
+  labelContainer.childNodes[i].classList.toggle("active", prediction[i].probability > 0.70);
+}
+    }
+
+    async function teachableLoop() {
+  if (webcam && webcam.canvas) {
+    webcam.update();
+    await executePredictions();
+    window.requestAnimationFrame(teachableLoop);
+  }
+}
+
+async function executePredictions() {
+  const prediction = await tmModel.predict(webcam.canvas);
+  for (let i = 0; i < maxPredictions; i++) {
+    labelContainer.childNodes[i].innerHTML =
+      prediction[i].className + ": " + (prediction[i].probability * 100).toFixed(0) + "%";
+    labelContainer.childNodes[i].classList.toggle("active", prediction[i].probability > 0.70);
+  }
+}
+    
+
+    function toggleCameraInversion() {
+      const canvasElement = document.querySelector("#webcam-container canvas");
+      if (!canvasElement) {
+        alert("Initialize the camera first.");
+        return;
+      }
+      canvasElement.style.transform =
+        (canvasElement.style.transform === "scaleX(-1)") ? "scaleX(1)" : "scaleX(-1)";
+    }
+
+    function stopTeachable() {
+      if (webcam) {
+        webcam.stop();   // releases camera
+        webcam = null;   // stops the loop
+      }
+      document.getElementById("webcam-container").innerHTML = "";
+      document.getElementById("label-container").innerHTML = "";
+    }
+  </script>
+
+</head>
+
+<body>
+  <!-- 1. Navbar -->
+  <nav class="navbar">
+    <div class="logo">Portfolio</div>
+
+    <ul class="nav-links">
+      <li><a href="#about">About Me</a></li>
+      <li><a href="#projects">Featured Work</a></li>
+      <li><a href="#Hire Me">Hire Me</a></li>
+    </ul>
+
+    <div class="nav-typing">
+      <span id="typing-text"></span><span class="typing-cursor">_</span>
+    </div>
+
+    <button id="music-btn" class="music-toggle" onclick="toggleMusic()">PLAY AUDIO</button>
+    <audio id="bg-audio" src="End of the Line_audio.mp3" loop autoplay></audio>
+  </nav>
+
+  <!-- 2. Hero -->
+  <header id="hero" class="hero-section">
+    <h1>Greetings program, i am <span class="highlight">Jeryeol John Tenebro</span></h1>
+    <p>3rd Year BSIT Student at Philippine Christian University</p>
+
+    <!-- Tagline card -->
+    <div class="tagline-card" style="display: inline-block; background-color: #030514; padding: 10px 24px; position: relative; margin-bottom: 35px; box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);">
+      <div style="position: absolute; top: 0; left: 0; width: 8px; height: 8px; border-top: 2px solid #06b6d4; border-left: 2px solid #06b6d4; filter: drop-shadow(0 0 3px #06b6d4); z-index: 3;"></div>
+      <div style="position: absolute; top: 0; right: 0; width: 8px; height: 8px; border-top: 2px solid #06b6d4; border-right: 2px solid #06b6d4; filter: drop-shadow(0 0 3px #06b6d4); z-index: 3;"></div>
+      <div style="position: absolute; bottom: 0; left: 0; width: 8px; height: 8px; border-bottom: 2px solid #06b6d4; border-left: 2px solid #06b6d4; filter: drop-shadow(0 0 3px #06b6d4); z-index: 3;"></div>
+      <div style="position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; border-bottom: 2px solid #06b6d4; border-right: 2px solid #06b6d4; filter: drop-shadow(0 0 3px #06b6d4); z-index: 3;"></div>
+      <p style="margin-bottom: 0 !important; color: #e2e8f0; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px; position: relative; z-index: 2;">
+        "Hindi ka IT kung hindi ka marunong gumawa ng missile"
+      </p>
+    </div>
+
+    <a href="#projects" class="btn">View My Work</a>
+  </header>
+
+  <!-- 3. About Me -->
+  <section id="about" class="about-section">
+    <h2>About Me</h2>
+    <div class="profile-img-container">
+      <img src="Bokal.jpg" alt="Jeryeol John Tenebro" class="profile-photo">
+    </div>
+    <div class="about-content">
+      <div style="display: block; max-width: 680px; background-color: #030514; padding: 20px 25px; position: relative; margin: 0 auto 30px auto; text-align: center;">
+
+        <!-- Neon corners -->
+        <div style="position: absolute; top: 0; left: 0; width: 10px; height: 10px; border-top: 2px solid #06b6d4; border-left: 2px solid #06b6d4; filter: drop-shadow(0 0 4px #06b6d4); z-index: 3;"></div>
+        <div style="position: absolute; top: 0; right: 0; width: 10px; height: 10px; border-top: 2px solid #06b6d4; border-right: 2px solid #06b6d4; filter: drop-shadow(0 0 4px #06b6d4); z-index: 3;"></div>
+        <div style="position: absolute; bottom: 0; left: 0; width: 10px; height: 10px; border-bottom: 2px solid #06b6d4; border-left: 2px solid #06b6d4; filter: drop-shadow(0 0 4px #06b6d4); z-index: 3;"></div>
+        <div style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-bottom: 2px solid #06b6d4; border-right: 2px solid #06b6d4; filter: drop-shadow(0 0 4px #06b6d4); z-index: 3;"></div>
+        <p style="margin-bottom: 0 !important; color: #e2e8f0; font-size: 1.25rem; font-weight: 600; letter-spacing: 0.5px; position: relative; z-index: 2;">
+          I am a aspiring 3rd Year BSIT student at Philippine Christian University, specializing in creating high-tech information systems and interactive web environments. Driven by logic and design, I look forward to engineering secure solutions for modern challenges.
+        </p>
+      </div>
+      <a href="Resume(Final).pdf" download="Jeryeol_Tenebro_Resume.pdf" class="btn resume-btn">Download Resume</a>
+
+      <!-- Teachable Machine (scroll-margin avoids navbar overlap) -->
+      <div class="teachable-about-wrapper" id="teachable-vision" style="margin-top: 140px; scroll-margin-top: 110px; padding: 25px; background-color: rgba(15, 23, 42, 0.45); backdrop-filter: blur(8px); border-radius: 6px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); max-width: 450px; margin-left: auto; margin-right: auto; text-align: center;">
+
+        <h3 style="font-family: 'TronFont', sans-serif !important; text-transform: uppercase; letter-spacing: 2px; color: #06b6d4; font-size: 1.1rem; margin-bottom: 20px;">Neural Matrix Vision</h3>
+
+        <!-- Controls -->
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+          <button type="button" class="btn"
+                  style="padding: 8px 16px; font-size: 0.8rem; border-color: #06b6d4; color: #06b6d4 !important; background-color: transparent;"
+                  onclick="initTeachable()">
+            Initialize Camera
+          </button>
+
+          <button type="button" class="btn"
+                  style="padding: 8px 16px; font-size: 0.8rem; border-color: #06b6d4; color: #06b6d4 !important; background-color: transparent;"
+                  onclick="toggleCameraInversion()">
+            Invert Camera
+          </button>
+        </div>
+
+        <button type="button" class="btn"
+                style="padding: 8px 16px; font-size: 0.8rem; border-color: #06b6d4; color: #06b6d4 !important; background-color: transparent;"
+                onclick="stopTeachable()">
+          Stop Camera
+        </button>
+
+        <!-- Vision panels -->
+        <div id="webcam-container" style="margin: 0 auto;"></div>
+        <div id="label-container" style="margin-top: 15px;"></div>
+
+<!-- Hand hint -->
+<p class="hand-hint">Use your left hand</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Featured Work -->
+  <section id="projects" class="projects-section">
+    <h2>Featured Work</h2>
+    <div class="projects-grid">
+
+      <!-- Left card: projects -->
+      <div class="project-card cyan-grid">
+        <h3>Project Accomplish</h3>
+        <p>- (Mini Capstone) An Inventory Management System for a Puregold Grocery Store</p>
+        <p>- (E-Commerce Web) A responsive online storefront that allows users to browse products, add items to a cart, and simulate checkout</p>
+        <p>- (Library System) A simple desktop application designed to track book borrowings, returns, and student registration records</p>
+        <p>- (Teachable Machine) a fast, web-based tool created by Google that lets anyone train machine learning models without writing any code</p>
+        <div class="clean-text-tags">
+          <span></span>
+          <span></span>
+        </div>
+
+        <a href="#teachable-vision" class="project-link">Teachable Machine from Jeryeol→</a>
+      </div>
+
+      <!-- Right card: languages -->
+      <div class="project-card cyan-grid">
+        <h3>Programming Languages</h3>
+
+        <ul style="list-style: none; padding: 0; margin: 20px 0; display: flex; flex-direction: column; gap: 10px;">
+          <li style="color: #cbd5e1; font-size: 1.05rem; display: flex; align-items: center; gap: 10px;">
+            <span style="color: #06b6d4; text-shadow: 0 0 8px #06b6d4;">▪</span> HTML5
+          </li>
+          <li style="color: #cbd5e1; font-size: 1.05rem; display: flex; align-items: center; gap: 10px;">
+            <span style="color: #06b6d4; text-shadow: 0 0 8px #06b6d4;">▪</span> Python
+          </li>
+          <li style="color: #cbd5e1; font-size: 1.05rem; display: flex; align-items: center; gap: 10px;">
+            <span style="color: #06b6d4; text-shadow: 0 0 8px #06b6d4;">▪</span> JavaScript
+          </li>
+          <li style="color: #cbd5e1; font-size: 1.05rem; display: flex; align-items: center; gap: 10px;">
+            <span style="color: #06b6d4; text-shadow: 0 0 8px #06b6d4;">▪</span> Java
+          </li>
+          <li style="color: #cbd5e1; font-size: 1.05rem; display: flex; align-items: center; gap: 10px;">
+            <span style="color: #06b6d4; text-shadow: 0 0 8px #06b6d4;">▪</span> PHP
+          </li>
+          <li style="color: #cbd5e1; font-size: 1.05rem; display: flex; align-items: center; gap: 10px;">
+            <span style="color: #06b6d4; text-shadow: 0 0 8px #06b6d4;">▪</span> MySQL
+          </li>
+          <li style="color: #cbd5e1; font-size: 1.05rem; display: flex; align-items: center; gap: 10px;">
+            <span style="color: #06b6d4; text-shadow: 0 0 8px #06b6d4;">▪</span> Bootstrap
+          </li>
+          <li style="color: #cbd5e1; font-size: 1.05rem; display: flex; align-items: center; gap: 10px;">
+            <span style="color: #06b6d4; text-shadow: 0 0 8px #06b6d4;">▪</span> Laravel
+          </li>
+        </ul>
+
+        <a href="#contact" class="project-link"></a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 5. Contact & Footer -->
+  <footer id="Hire Me" class="footer-section">
+    <h2>Get In Touch!</h2>
+    <p>I'm currently looking for internship opportunities. Let's connect!</p>
+    <a href="mailto:jeryeoljohntenebro@gmail.com" class="btn email-btn">Send an Email</a>
+    <div class="social-links">
+      <a href="https://github.com" target="_blank">GitHub</a>
+      <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+    </div>
+    <p class="copyright">&copy; 2026 Jeryeol John Tenebro. All Rights Reserved.</p>
+  </footer>
+
+  <!-- 6. Chat widget -->
+  <div class="chat-widget">
+    <button class="chat-button" onclick="toggleChat()">CHAT WITH TRON</button>
+
+    <div id="chat-window" class="chat-window hidden">
+      <div class="chat-header">
+        <h4>GRID Assistant</h4>
+        <button class="close-btn" onclick="toggleChat()">&times;</button>
+      </div>
+
+      <div id="chat-body" class="chat-body">
+        <div class="bot-msg">Greetings, User. I am the Tron a AI assistant, built and programmed by Jeryeol. What information would you like to know about him?</div>
+        <div class="bot-msg">(Hidden Feature: Type "Override")</div>
+      </div>
+
+      <div class="chat-footer">
+        <input type="text" id="user-input" placeholder="Enter transmission..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">SEND</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleChat() {
+      const chatWindow = document.getElementById('chat-window');
+      if (chatWindow) chatWindow.classList.toggle('hidden');
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+
+    const resumeDatabase = {
+      greeting: "Greetings, user. GRID mainframe initialized. Online and ready to deliver Jeryeol John Tenebro's technical credentials.",
+      age: "Jeryeol was born in 2005 and is currently 21 solar cycles old.",
+      skills: "Jeryeol is currently learning Java, Python, HTML, CSS, C#, JavaScript, PHP, MySQL, Bootstrap, and Laravel.",
+      project: "He served as the Lead Backend Developer for the 2nd-Year Mini Capstone Project, engineering a custom Java stock-tracking application for a simulated Puregold Grocery Store.",
+      education: "Jeryeol is a 3rd Year BSIT student at Philippine Christian University (PCU) Manila, projected to graduate in 2028.",
+      contact: "Establish a direct transmission via (jeryeoljohntenebro@gmail.com) and his Array number is (09949130184)",
+      fallback: "GRID System Node: Information not found in Jeryeol's core database.",
+      address: "He lives at 2147 Street Sta. Ana Manila (Philippines)",
+    };
+
+    function addBotMessage(text, isError = false) {
+  const chatBody = document.getElementById('chat-body');
+  const div = document.createElement('div');
+  div.className = isError ? 'bot-msg error-msg' : 'bot-msg';
+  div.innerText = text;
+  chatBody.appendChild(div);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+    function setMusicButton(playing) {
+      const btn = document.getElementById('music-btn');
+      if (!btn) return;
+      btn.classList.toggle('playing', playing);
+      btn.innerText = playing ? "PAUSE AUDIO" : "PLAY AUDIO";
+    }
+
+    function sendMessage() {
+      const inputField = document.getElementById('user-input');
+      const chatBody = document.getElementById('chat-body');
+      if (!inputField || !chatBody) return;
+
+      const messageText = inputField.value.trim();
+      if (!messageText) return;
+
+      const userDiv = document.createElement('div');
+      userDiv.className = 'user-msg';
+      userDiv.innerText = messageText;
+      chatBody.appendChild(userDiv);
+      inputField.value = '';
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'bot-msg';
+      typingDiv.id = 'typing-indicator';
+      typingDiv.innerText = "Scanning data layers...";
+      chatBody.appendChild(typingDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      setTimeout(() => {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+
+        const q = messageText.toLowerCase();
+        const bgAudio = document.getElementById('bg-audio');
+        const isHacked = document.body.classList.contains('rinzler-mode');
+        let reply = resumeDatabase.fallback;
+        let isError = false;
+
+        const hackedErrors = [
+          "ERROR 0x52494E5A: Database access denied.\nGRID mainframe has been hacked by RINZLER..",
+          "FATAL: Identity Disc compromised.\nUnable to retrieve information. Type 'Reboot' to Restart the system..",
+        ];
+
+        if (q.includes("override") || q.includes("rinzler")) {
+          reply = "CRITICAL WARNING: SYSTEM COMPROMISED!!...";
+          isError = true;
+          document.body.classList.add('rinzler-mode');
+          if (bgAudio) {
+            bgAudio.src = "Clu_Audio.mp3";
+            bgAudio.play().then(() => setMusicButton(true)).catch(e => console.log(e));
+          }
+        } else if (q.includes("reboot")) {
+          reply = "SYSTEM REBOOT: Purging corrupted code blocks. Welcome back, Creator.";
+          document.body.classList.remove('rinzler-mode');
+          if (bgAudio) {
+            bgAudio.src = "End of the Line_audio.mp3";
+            bgAudio.play().then(() => setMusicButton(true)).catch(e => console.log(e));
+          }
+        } else if (q.includes("pause") || q.includes("stop music")) {
+          if (bgAudio && !bgAudio.paused) {
+            bgAudio.pause();
+            setMusicButton(false);
+            reply = "GRID Audio Transmission: Playback paused.";
+          } else {
+            reply = "GRID Audio Transmission: Mainframe audio is already quiet.";
+          }
+        } else if (isHacked) {
+          // Hacked: every info question errors
+          reply = hackedErrors[Math.floor(Math.random() * hackedErrors.length)];
+          isError = true;
+        } else if (q.includes("age") || q.includes("old") || q.includes("birthday") || q.includes("born")) {
+          reply = resumeDatabase.age;
+        } else if (q.includes("skill") || q.includes("stack") || q.includes("language")) {
+          reply = resumeDatabase.skills;
+        } else if (q.includes("project") || q.includes("puregold") || q.includes("capstone")) {
+          reply = resumeDatabase.project;
+        } else if (q.includes("school") || q.includes("university") || q.includes("pcu") || q.includes("study")) {
+          reply = resumeDatabase.education;
+        } else if (q.includes("contact") || q.includes("email") || q.includes("cellphone") || q.includes("phone number")) {
+          reply = resumeDatabase.contact;
+        } else if (q.includes("hello") || q === "hi" || q.startsWith("hi ")) {
+          reply = resumeDatabase.greeting;
+        } else if (q.includes("address") || q.includes("live") || q.includes("location") || q.includes("where")) {
+          reply = resumeDatabase.address;
+        }
+
+        addBotMessage(reply, isError);
+      }, 500);
+    }
+
+    function toggleMusic() {
+      const bgAudio = document.getElementById('bg-audio');
+      if (!bgAudio) return;
+      if (bgAudio.paused) {
+        bgAudio.play().then(() => setMusicButton(true)).catch(e => console.log("Blocked:", e));
+      } else {
+        bgAudio.pause();
+        setMusicButton(false);
+      }
+    }
+
+    const roles = [
+      "Aspiring Web Developer",
+      "Backend Developer",
+      "Java | PHP | Laravel"
+    ];
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function typeRoles() {
+      const el = document.getElementById('typing-text');
+      if (!el) return;
+
+      const current = roles[roleIndex];
+
+      if (!isDeleting) {
+        charIndex++;
+        el.innerText = current.substring(0, charIndex);
+        if (charIndex === current.length) {
+          isDeleting = true;
+          setTimeout(typeRoles, 1500);   // pause when typed
+          return;
+        }
+        setTimeout(typeRoles, 100);      // typing speed
+      } else {
+        charIndex--;
+        el.innerText = current.substring(0, charIndex);
+        if (charIndex === 0) {
+          isDeleting = false;
+          roleIndex = (roleIndex + 1) % roles.length;
+          setTimeout(typeRoles, 400);    // pause before next role
+          return;
+        }
+        setTimeout(typeRoles, 50);       // deleting speed
+      }
+    }
+    typeRoles();
+  </script>
+</body>
+</html>

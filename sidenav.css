@@ -1,0 +1,160 @@
+/* ==========================================================================
+   SIDE MENU + SCROLLBAR  (replaces the native scrollbar and the top nav links)
+   ========================================================================== */
+
+/* 1. Hide the native scrollbar everywhere (also beats the Rinzler scrollbar rules) */
+html {
+    scrollbar-width: none !important;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+html:has(body.rinzler-mode)::-webkit-scrollbar,
+body.rinzler-mode::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+}
+
+/* 2. Remove the old top links (logo + audio button stay) */
+.navbar .nav-links {
+    display: none !important;
+}
+
+/* 3. Keep section titles from hiding under the sticky navbar when jumping */
+#about,
+#projects,
+[id="Hire Me"],
+#hire-me {
+    scroll-margin-top: 90px;
+}
+
+/* 4. The panel */
+.side-menu {
+    --sm-color: #06b6d4;
+    --sm-glow: rgba(6, 182, 212, 0.6);
+    position: fixed;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60vh;
+    min-height: 260px;
+    width: 190px;
+    z-index: 500;
+    user-select: none;
+}
+
+body.rinzler-mode .side-menu {
+    --sm-color: #ff9d00;
+    --sm-glow: rgba(255, 157, 0, 0.6);
+}
+
+/* The rail (scrollbar track) */
+.sm-rail {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(6, 182, 212, 0.25);
+    background: color-mix(in srgb, var(--sm-color) 25%, transparent);
+    cursor: pointer;
+    touch-action: none;
+}
+
+/* Wider invisible hit area so the rail is easy to grab */
+.sm-rail::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -10px;
+    right: -10px;
+}
+
+/* The thumb (scroll position) */
+.sm-thumb {
+    position: absolute;
+    left: -2px;
+    width: 6px;
+    height: 40px;
+    top: 0;
+    border-radius: 3px;
+    background: var(--sm-color);
+    box-shadow: 0 0 10px var(--sm-glow), 0 0 20px var(--sm-glow);
+    cursor: grab;
+}
+
+.sm-rail.dragging .sm-thumb {
+    cursor: grabbing;
+}
+
+/* Menu items sitting on the rail */
+.sm-item {
+    position: absolute;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    padding: 6px 0;
+    cursor: pointer;
+    font-family: 'TronFont', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    z-index: 2;
+}
+
+.sm-label {
+    padding: 6px 12px;
+    background: rgba(2, 6, 23, 0.55);
+    backdrop-filter: blur(4px);
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.sm-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #020617;
+    border: 2px solid var(--sm-color);
+    box-shadow: 0 0 6px var(--sm-glow);
+    transition: all 0.3s ease;
+}
+
+.sm-item:hover,
+.sm-item.active {
+    color: var(--sm-color);
+    text-shadow: 0 0 8px var(--sm-glow);
+}
+
+.sm-item:hover .sm-dot,
+.sm-item.active .sm-dot {
+    background: var(--sm-color);
+    box-shadow: 0 0 14px var(--sm-glow);
+}
+
+.sm-item:focus-visible {
+    outline: 1px dashed var(--sm-color);
+    outline-offset: 2px;
+}
+
+/* Phones: keep just the dots + rail so the menu doesn't cover content */
+@media (max-width: 700px) {
+    .side-menu {
+        width: 24px;
+        right: 6px;
+    }
+    .sm-label {
+        display: none;
+    }
+}
+
+/* Rinzler mode: turn the navbar's bottom line orange too */
+body.rinzler-mode .navbar {
+    border-bottom-color: rgba(255, 157, 0, 0.6) !important;
+}
